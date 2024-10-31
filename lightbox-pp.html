@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Lightbox with Navigation</title>
+    <style>
+        /* Add your custom styles for the lightbox overlay and image container */
+        #pp_lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        #pp_lightbox img {
+            max-width: 80%;
+            max-height: 80%;
+            display: block;
+            margin: auto;
+            margin-top: 5%;
+        }
+
+        #pp_lightboxCloseBtn, #pp_lightboxPrevBtn, #pp_lightboxNextBtn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #pp_lightboxCloseBtn {
+            top:10px;
+            right: 10px;
+        }
+
+        #pp_lightboxPrevBtn {
+            left: 10px;
+        }
+
+        #pp_lightboxNextBtn {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Thumbnail images with class 'lightbox-trigger' and 'data-index' attribute -->
+<img class="pp_lightbox-trigger" data-index="0" src="https://g.petango.com/photos/846/d8f0b2b0-666e-4e77-af6e-4770273d1d24.jpg" alt="Thumbnail 1">
+<img class="pp_lightbox-trigger" data-index="1" src="https://g.petango.com/photos/846/a7827c6b-f629-4ed7-90f3-88f0a84243d9.jpg" alt="Thumbnail 2">
+<img class="pp_lightbox-trigger" data-index="2" src="https://g.petango.com/photos/846/ede2bd0b-9d55-4602-b6e5-ef63a026a1f1.jpg" alt="Thumbnail 3">
+
+<div id="pp_lightbox">
+    <span id="pp_lightboxCloseBtn">&times;</span>
+    <span id="pp_lightboxPrevBtn">&lt;</span>
+    <img id="pp_lightboxImg" src="" alt="Lightbox Image">
+    <span id="pp_lightboxNextBtn">&gt;</span>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var images = [
+            "https://g.petango.com/photos/846/d8f0b2b0-666e-4e77-af6e-4770273d1d24.jpg",
+            "https://g.petango.com/photos/846/a7827c6b-f629-4ed7-90f3-88f0a84243d9.jpg",
+            "https://g.petango.com/photos/846/ede2bd0b-9d55-4602-b6e5-ef63a026a1f1.jpg"
+        ];
+
+        var currentIndex = 0;
+
+        function showImage(index) {
+            $('#pp_lightboxImg').attr('src', images[index]);
+            currentIndex = index;
+        }
+
+        // Set default image
+        showImage(currentIndex);
+
+        // Open lightbox on click
+        $('.pp_lightbox-trigger').click(function () {
+            var clickedIndex = $(this).attr('data-index');
+            showImage(clickedIndex);
+            $('#pp_lightbox').fadeIn();
+        });
+
+        // Close lightbox
+        function closeLightbox() {
+            $('#pp_lightbox').fadeOut();
+        }
+
+        // Click outside the image or on the overlay to close
+        $('#pp_lightbox, #pp_lightboxCloseBtn').click(function (e) {
+            if (e.target.id === 'pp_lightbox' || e.target.id === 'pp_lightboxCloseBtn') {
+                closeLightbox();
+            }
+        });
+
+        // Navigate to the previous image
+        $('#pp_lightboxPrevBtn').click(function (e) {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        });
+
+        // Navigate to the next image
+        $('#pp_lightboxNextBtn').click(function (e) {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        });
+
+        // Prevent closing when clicking on the image
+        $('#pp_lightboxImg').click(function (e) {
+            e.stopPropagation();
+        });
+    });
+</script>
+</body>
+</html>
